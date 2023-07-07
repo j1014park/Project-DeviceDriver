@@ -22,7 +22,7 @@ string Application::ReadAndPrint(long startAddr, long endAddr)
 
 void Application::WriteAll(int value)
 {
-	for (long addr = 0; addr <= 4; ++addr)
+	for (long addr = 0; addr < MAX_ADDRSS; ++addr)
 	{
 		try
 		{
