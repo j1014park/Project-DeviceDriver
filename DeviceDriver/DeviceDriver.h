@@ -1,6 +1,7 @@
 #pragma once
 #include "FlashMemoryDevice.h"
-
+#define EMPTY_FALSH_ADDRSS 0xFF
+#define MAX_ADDRSS 0x5
 using namespace std;
 
 
@@ -13,16 +14,24 @@ public:
 
 protected:
     FlashMemoryDevice* m_hardware;
+
 };
 
 class ReadFailException : public exception
 {
 public:
-    ReadFailException(const char* str) {}
+	explicit ReadFailException(char const* _Message)
+		: exception(_Message)
+	{
+	}
+
 };
 
 class WriteFailException : public exception
 {
 public:
-    WriteFailException(const char* str) {}
+	explicit WriteFailException(char const* _Message)
+		: exception(_Message)
+	{
+	}
 };
