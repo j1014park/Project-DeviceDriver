@@ -1,13 +1,16 @@
-﻿#pragma once
-#include "FlashMemoryDevice.h"
+﻿#include "DeviceDriver.h"
 
-class DeviceDriver
+DeviceDriver::DeviceDriver(FlashMemoryDevice* hardware) : m_hardware(hardware)
+{}
+
+int DeviceDriver::read(long address)
 {
-public:
-    DeviceDriver(FlashMemoryDevice* hardware);
-    int read(long address);
-    void write(long address, int data);
+    // TODO: implement this method properly
+    return (int)(m_hardware->read(address));
+}
 
-protected:
-    FlashMemoryDevice* m_hardware;
-};
+void DeviceDriver::write(long address, int data)
+{
+    // TODO: implement this method
+    m_hardware->write(address, (unsigned char)data);
+}
