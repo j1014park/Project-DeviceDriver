@@ -17,7 +17,7 @@ public:
 };
 
 
-TEST(FlashMockInjectionTest, readNornalTest)
+TEST(FlashMockInjectionTest, readNormalTest)
 {
 	FlashMock flash_mock;
 	EXPECT_CALL(flash_mock, read(1L)).WillRepeatedly(Return(1));
@@ -36,3 +36,25 @@ TEST(FlashMockInjectionTest, readException)
 	DeviceDriver driver(&flash_mock);
 	EXPECT_THROW(driver.read(0x1), ReadFailException);
 }
+
+
+TEST(FlashMockInjectionTest, WriteNormalTest)
+{
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(1L)).Times(1).WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, write(1L,100)).Times(1);
+	DeviceDriver driver(&flash_mock);
+	driver.write(1L, 100);
+}
+
+
+TEST(FlashMockInjectionTest, WriteException)
+{
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(1L)).Times(1).WillRepeatedly(Return(1));
+	EXPECT_CALL(flash_mock, write(1L, 100)).Times(0);
+	DeviceDriver driver(&flash_mock);
+	EXPECT_THROW(driver.write(1L, 100), WriteFailException);
+
+}
+

@@ -20,3 +20,9 @@ class ReadFailException : public exception
 public:
     ReadFailException(const char* str) {}
 };
+
+class WriteFailException : public exception
+{
+public:
+    WriteFailException(const char* str) {}
+};
