@@ -18,11 +18,18 @@ protected:
 class ReadFailException : public exception
 {
 public:
-    ReadFailException(const char* str) {}
+	explicit ReadFailException(char const* _Message)
+		: exception(_Message)
+	{
+	}
+
 };
 
 class WriteFailException : public exception
 {
 public:
-    WriteFailException(const char* str) {}
+	explicit WriteFailException(char const* _Message)
+		: exception(_Message)
+	{
+	}
 };

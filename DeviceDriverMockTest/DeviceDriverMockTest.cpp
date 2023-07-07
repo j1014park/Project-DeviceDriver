@@ -83,3 +83,43 @@ TEST(FlashMockInjectionTest, ApplicationReadExceptionTest)
 
 }
 
+TEST(FlashMockInjectionTest, ApplicationWriteTest)
+{
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(0L)).Times(1).WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, read(1L)).Times(1).WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, read(2L)).Times(1).WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, read(3L)).Times(1).WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, read(4L)).Times(1).WillRepeatedly(Return(0xFF));
+
+	EXPECT_CALL(flash_mock, write(0L, 999)).Times(1);
+	EXPECT_CALL(flash_mock, write(1L, 999)).Times(1);
+	EXPECT_CALL(flash_mock, write(2L, 999)).Times(1);
+	EXPECT_CALL(flash_mock, write(3L, 999)).Times(1);
+	EXPECT_CALL(flash_mock, write(4L, 999)).Times(1);
+
+	Application app(new DeviceDriver(&flash_mock));
+	app.WriteAll(999);
+
+
+}
+
+TEST(FlashMockInjectionTest, ApplicationWriteExceptionTest)
+{
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(0L)).Times(1).WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, read(1L)).Times(1).WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, read(2L)).Times(1).WillRepeatedly(Return(0xFF));
+	EXPECT_CALL(flash_mock, read(3L)).Times(1).WillRepeatedly(Return(0x1));
+	EXPECT_CALL(flash_mock, read(4L)).Times(0).WillRepeatedly(Return(0xFF));
+
+	EXPECT_CALL(flash_mock, write(0L, 999)).Times(1);
+	EXPECT_CALL(flash_mock, write(1L, 999)).Times(1);
+	EXPECT_CALL(flash_mock, write(2L, 999)).Times(1);
+	EXPECT_CALL(flash_mock, write(3L, 999)).Times(0);
+	EXPECT_CALL(flash_mock, write(4L, 999)).Times(0);
+
+	Application app(new DeviceDriver(&flash_mock));
+	EXPECT_THROW(app.WriteAll(999), WriteFailException);
+}
+
