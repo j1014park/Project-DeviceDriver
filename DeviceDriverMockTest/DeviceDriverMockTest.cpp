@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "../DeviceDriver/DeviceDriver.cpp"
+#include "../DeviceDriver/Application.cpp"
 #include <vector>
 
 using namespace testing;
@@ -55,6 +56,30 @@ TEST(FlashMockInjectionTest, WriteException)
 	EXPECT_CALL(flash_mock, write(1L, 100)).Times(0);
 	DeviceDriver driver(&flash_mock);
 	EXPECT_THROW(driver.write(1L, 100), WriteFailException);
+
+}
+
+TEST(FlashMockInjectionTest, ApplicationReadTest)
+{
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(0L)).WillRepeatedly(Return(0));
+	EXPECT_CALL(flash_mock, read(1L)).WillRepeatedly(Return(1));
+	EXPECT_CALL(flash_mock, read(2L)).WillRepeatedly(Return(2));
+
+	Application app(new DeviceDriver(&flash_mock));
+	EXPECT_THAT("0,1,2,", Eq(app.ReadAndPrint(0L,2L)));
+
+}
+
+TEST(FlashMockInjectionTest, ApplicationReadExceptionTest)
+{
+	FlashMock flash_mock;
+	EXPECT_CALL(flash_mock, read(0L)).WillOnce(Return(0x2)).WillRepeatedly(Return(0));
+	EXPECT_CALL(flash_mock, read(1L)).WillRepeatedly(Return(1));
+	EXPECT_CALL(flash_mock, read(2L)).WillRepeatedly(Return(2));
+
+	Application app(new DeviceDriver(&flash_mock));
+	EXPECT_THROW(app.ReadAndPrint(0L, 2L),ReadFailException);
 
 }
 
